@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kavade | SachinKn.in</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #cd214a;
+            overflow: hidden;
+        }
+
+        button {
+            padding: 20px 20px;
+            font-size: 18px;
+            margin-bottom: 40px;
+            margin-top: 40px;
+            cursor: pointer;
+        }
+
+        #button-1 {
+            transform: rotate(180deg);
+        }
+
+        #result {
+            font-size: 24px;
+            font-weight: bold;
+            width: 350px;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .result-image {
+            width: 350px;
+            border-radius: 50px;
+            border: 2px solid rgb(85, 85, 85);
+        }
+
+        #history-1, #history-2 {
+            color: #fff;
+            font-size: 20px;
+            height: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="history-1" id="history-1" style="transform: rotate(180deg); transition: transform 0.6s ease;"></div>
+
+    <button id="button-1" onclick="generateRandom('button-1')">Play</button>
+    <div id="result" class="animate__animated animate__bounceIn">Click play button to start</div>
+    <button id="button-2" onclick="generateRandom('button-2')">Play</button>
+
+    <div class="history-2" id="history-2"></div>
+
+    <script>
+        const histories = {
+            'button-1': [],
+            'button-2': []
+        };
+        let lastButtonId = null;
+
+        function generateRandom(buttonId) {
+            const resultDiv = document.getElementById('result');
+            const currentHistory = histories[buttonId];
+            const historyDiv = document.getElementById(buttonId === 'button-1' ? 'history-1' : 'history-2');
+
+            // Clear the opposite history if switching buttons
+            if (lastButtonId && lastButtonId !== buttonId) {
+                histories[lastButtonId] = []; // clear old history
+                const oldHistoryDiv = document.getElementById(lastButtonId === 'button-1' ? 'history-1' : 'history-2');
+                oldHistoryDiv.innerText = ''; // clear old history from UI
+            }
+            lastButtonId = buttonId;
+
+            // Remove and re-add animation to re-trigger it
+            resultDiv.classList.remove('animate__bounceIn');
+            void resultDiv.offsetWidth;
+
+            let rawRandom = Math.floor(Math.random() * 5) + 1;
+            let displayNumber = rawRandom === 5 ? 8 : rawRandom;
+
+            // Generate random rotation: 90, 180, or 270 degrees
+            const rotations = [90, 180, 270];
+            const rotation = rotations[Math.floor(Math.random() * rotations.length)];
+
+            // Update image with random rotation
+            resultDiv.innerHTML = `<img class="result-image" src="../images/kavade-${displayNumber}.png" alt="" style="transform: rotate(${rotation}deg); transition: transform 0.6s ease;">`;
+
+            // Re-add animation class
+            resultDiv.classList.add('animate__bounceIn');
+
+            // Update history
+            currentHistory.unshift(displayNumber);
+            if (currentHistory.length > 10) currentHistory.pop();
+
+            historyDiv.innerText = `${currentHistory.slice().reverse().join(', ')}`;
+        }
+
+    </script>
+
+
+</body>
+
+</html>
